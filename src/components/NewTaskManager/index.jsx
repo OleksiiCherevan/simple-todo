@@ -2,34 +2,21 @@ import TaskList from "components/TaskList";
 import TextField from "components/TextField";
 import Button from "components/Button";
 
+import { useSelector, useDispatch } from "react-redux";
+import { addTodo, toggleComplete, deleteTodo } from "store/todoSlice";
+
 import { React, useState } from "react";
 
-const TASKS = [
-    {
-        id: "1",
-        title: "Help me!",
-        isCompleted: true,
-    },
-    {
-        id: "2",
-        title: "Buy some milk",
-        isCompleted: false,
-    },
-    {
-        id: "3",
-        title: "Make a breakfast",
-        isCompleted: false,
-    },
-];
+
 
 const NewTaskManager = (props) => {
     const [text, setText] = useState("");
+    const dispatch = useDispatch();
 
-    const [todos, setTodos] = useState(TASKS);
-    const [id, setId] = useState(todos.length + 1);
+    const todos = useSelector((state) => state.todo.todos);
 
     const onClick = () => {
-        AddTask();
+        AddTodo();
     };
 
     const onTextChange = (text) => {
@@ -41,49 +28,27 @@ const NewTaskManager = (props) => {
     };
 
     const onToggleComplete = (id) => {
-        
-        ToggleComplete(id)
+        ToggleComplete(id);
     };
 
-    const AddTask = () => {
-        setText('')
-
-        if (!text) {
-            return;
-        }
-
-        setId(id + 1);
-
-        let _id = id;
-        let _title = text;
-        let _isCompleted = false;
-
-        setTodos([
-            ...todos,
-            {
-                id: _id,
-                title: _title,
-                isCompleted: _isCompleted,
-            },
-        ]);
+    const AddTodo = () => {
+        dispatch(addTodo({
+            text
+        }))
     };
 
     const ToggleComplete = (id) => {
-        let _todos = Array.from(todos)
-
-        let indexTodo = _todos.findIndex(todo => todo.id === id)
-        let todo = _todos[indexTodo]
-
-        _todos[indexTodo] = {
-            ...todo,
-            isCompleted: true
-        }
-
-        setTodos(_todos)
-    }
+        dispatch(toggleComplete({
+            id
+        }))
+    };
 
     const DeleteTask = (id) => {
-        setTodos(todos.filter((task) => task.id !== id));
+        dispatch(
+            deleteTodo({
+                id,
+            })
+        );
     };
     return (
         <div className="task-manager">
@@ -92,7 +57,11 @@ const NewTaskManager = (props) => {
                 <Button onClick={onClick}>Add task</Button>
             </span>
 
-            <TaskList tasks={todos} onDelete={onDelete} onComplete={onToggleComplete}></TaskList>
+            <TaskList
+                tasks={todos}
+                onDelete={onDelete}
+                onComplete={onToggleComplete}
+            ></TaskList>
         </div>
     );
 };

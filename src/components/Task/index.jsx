@@ -10,7 +10,7 @@ const Task = (props) => {
     return (
         <div className="task">
             <div className={`task__text ${isCompleted ? "task_completed" : "task_not-completed" }`} >{title}</div>
-            <div className="task__state task__state_complete" onClick={onTaskToggleComplete}>+</div>
+            <input className="task__state task__state_complete" type="checkbox" checked={isCompleted} onChange={onTaskToggleComplete}></input>
             <div className="task__state task__state_delete" onClick={onTaskDeleteClick}>x</div>
         </div>
     );
